@@ -1,5 +1,6 @@
 import { MikroORM } from '@mikro-orm/core'
 import { ApolloServer } from 'apollo-server-express'
+import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import path from 'path'
@@ -13,6 +14,7 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') })
 const main = async () => {
 	const orm = await MikroORM.init(mikroConfig)
 	const app = express()
+	app.use(cors())
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
 			resolvers: [HelloResolver, PostResolver],
