@@ -8,6 +8,7 @@ import { buildSchema } from 'type-graphql'
 import mikroConfig from './mikro-orm.config'
 import { HelloResolver } from './resolvers/hello'
 import { PostResolver } from './resolvers/post'
+import { UserResolver } from './resolvers/user'
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') })
 
@@ -15,9 +16,10 @@ const main = async () => {
 	const orm = await MikroORM.init(mikroConfig)
 	const app = express()
 	app.use(cors())
+	// const RedisStore = connectRedis(session)
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [HelloResolver, PostResolver],
+			resolvers: [HelloResolver, PostResolver, UserResolver],
 			validate: false,
 		}),
 		context: ({ req, res }) => ({
