@@ -7,7 +7,6 @@ import { Field, InterfaceType } from 'type-graphql'
 export abstract class MongoClass {
 	@PrimaryKey()
 	readonly _id!: ObjectId
-
 	@Field()
 	@SerializedPrimaryKey()
 	id!: string
