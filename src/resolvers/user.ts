@@ -3,11 +3,15 @@ import {
 	Arg,
 	Ctx,
 	Field,
+	FieldResolver,
 	InputType,
 	Mutation,
 	ObjectType,
+	Query,
 	Resolver,
+	Root,
 } from 'type-graphql'
+import { Post } from '../entities/Post'
 import { User } from '../entities/User'
 import { Mycontext } from '../mikro-orm.config'
 import { isPhone } from '../utls/isPhone'
@@ -59,6 +63,12 @@ export class UserResponse {
 
 @Resolver(User)
 export class UserResolver {
+	@FieldResolver(() => [Post])
+	async posts(@Root() user: User, @Ctx() { em }: Mycontext): Promise<Post[]> {
+		const posts = em.find(Post, { creator: user.id })
+		return posts
+	}
+
 	@Mutation(() => UserResponse)
 	async sendToken(
 		@Arg('phone') phone: string,
@@ -150,5 +160,17 @@ export class UserResolver {
 		await em.persistAndFlush(user)
 		setAuth(req.session, user)
 		return { user }
+	}
+
+	@Query(() => User, { nullable: true })
+	async me(@Ctx() { em, req }: Mycontext): Promise<User | null> {
+		if (!req.session.userId) {
+			return null
+		}
+		const user = await em.findOne(User, { id: req.session.userId })
+		if (!user) {
+			return null
+		}
+		return user
 	}
 }

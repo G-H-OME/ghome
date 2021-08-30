@@ -1,4 +1,12 @@
-import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver } from 'type-graphql'
+import {
+	Arg,
+	Ctx,
+	FieldResolver,
+	Mutation,
+	Query,
+	Resolver,
+	Root,
+} from 'type-graphql'
 import { Post } from '../entities/Post'
 import { User } from '../entities/User'
 import { Mycontext } from '../mikro-orm.config'
@@ -6,6 +14,11 @@ import { Mycontext } from '../mikro-orm.config'
 @Resolver(Post)
 export class PostResolver {
 	@FieldResolver(() => User)
+	async creator(@Root() post: Post, @Ctx() { em }: Mycontext) {
+		const user = await em.findOne(User, { id: post.creator.id })
+		return user
+	}
+
 	@Query(() => [Post])
 	posts(@Ctx() { em }: Mycontext): Promise<Post[]> {
 		return em.find(Post, {})
@@ -21,10 +34,10 @@ export class PostResolver {
 
 	@Mutation(() => Post, { nullable: true })
 	async createPost(
-		@Ctx() { em }: Mycontext,
+		@Ctx() { em, req }: Mycontext,
 		@Arg('title', () => String) title: string
 	): Promise<Post> {
-		const post = em.create(Post, { title })
+		const post = em.create(Post, { title, creator: req.session.userId })
 		await em.persistAndFlush(post)
 		return post
 	}
