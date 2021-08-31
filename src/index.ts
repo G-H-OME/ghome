@@ -19,7 +19,6 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') })
 const main = async () => {
 	const orm = await MikroORM.init(mikroConfig)
 	const app = express()
-	app.use(cors())
 	const RedisStore = connectRedis(session)
 	const options: Redis.RedisOptions = {
 		host: process.env.REDIS_URL,
@@ -41,7 +40,14 @@ const main = async () => {
 			redis,
 		}),
 	})
-	// const post = orm.em.create(Post, { title: '666' })
+	app.set('trust proxy', 1)
+	app.use(
+		cors({
+			origin: process.env.FRONTEND_URL,
+			credentials: true,
+		})
+	)
+	// const post = orm.em.create(Post, { title: '666', creator:''})
 	// await orm.em.persistAndFlush(post)
 	// app.get('/', (req: Request, res: Response) => {
 	// 	res.send('Hello World')

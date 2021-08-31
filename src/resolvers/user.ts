@@ -157,7 +157,7 @@ export class UserResolver {
 			setAuth(req.session, newUser)
 			return { user: newUser }
 		}
-		await em.persistAndFlush(user)
+		// await em.persistAndFlush(user)
 		setAuth(req.session, user)
 		return { user }
 	}
@@ -172,5 +172,19 @@ export class UserResolver {
 			return null
 		}
 		return user
+	}
+	@Mutation(() => Boolean)
+	async logout(@Ctx() { req, res }: Mycontext): Promise<boolean> {
+		return new Promise((resolve) => {
+			req.session.destroy((err) => {
+				if (err) {
+					console.log(err)
+					resolve(false)
+					return
+				}
+				res.clearCookie(process.env.COOKIE_NAME)
+				resolve(true)
+			})
+		})
 	}
 }
