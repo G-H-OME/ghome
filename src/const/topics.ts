@@ -1,0 +1,4 @@
+export const HELLO = 'HELLO'
+export const HELLOSUCCESS = 'HELLOSUCCESS'
+export const PAYMENTNOTICE = 'PAYMENTNOTICE'
+export const PAYMENTSUCCESS = 'PAYMENTSUCCESS'

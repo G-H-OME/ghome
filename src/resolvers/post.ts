@@ -6,9 +6,11 @@ import {
 	Query,
 	Resolver,
 	Root,
+	UseMiddleware,
 } from 'type-graphql'
 import { Post } from '../entities/Post'
 import { User } from '../entities/User'
+import { isAuth } from '../middleware/isAuth'
 import { Mycontext } from '../mikro-orm.config'
 
 @Resolver(Post)
@@ -24,6 +26,11 @@ export class PostResolver {
 		return em.find(Post, {})
 	}
 
+	@Query(() => [Post])
+	myPosts(@Ctx() { req, em }: Mycontext): Promise<Post[]> {
+		return em.find(Post, { creator: req.session.userId })
+	}
+
 	@Query(() => Post, { nullable: true })
 	post(
 		@Ctx() { em }: Mycontext,
@@ -33,6 +40,7 @@ export class PostResolver {
 	}
 
 	@Mutation(() => Post, { nullable: true })
+	@UseMiddleware(isAuth())
 	async createPost(
 		@Ctx() { em, req }: Mycontext,
 		@Arg('title', () => String) title: string
@@ -42,6 +50,17 @@ export class PostResolver {
 		return post
 	}
 
+	@Mutation(() => Boolean)
+	@UseMiddleware(isAuth())
+	async deletePost(
+		@Ctx() { em }: Mycontext,
+		@Arg('id') id: string
+	): Promise<Boolean> {
+		await em.nativeDelete(Post, { id })
+		return true
+	}
+
+	@UseMiddleware(isAuth())
 	@Mutation(() => Post, { nullable: true })
 	async updatePost(
 		@Ctx() { em }: Mycontext,

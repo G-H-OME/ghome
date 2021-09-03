@@ -34,7 +34,6 @@
     "graphql": "^15.5.1",
     "graphql-redis-subscriptions": "^2.4.0",
     "ioredis": "^4.27.8",
-    "nodenv": "^0.1.0",
     "reflection": "^0.0.1",
     "type-graphql": "^1.1.1"
   }

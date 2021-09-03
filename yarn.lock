@@ -2052,11 +2052,6 @@ nodemon@^2.0.12:
     undefsafe "^2.0.3"
     update-notifier "^4.1.0"
 
-nodenv@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/nodenv/-/nodenv-0.1.0.tgz#182315b3f1e54a74afb4af86d12a22e6b0e45882"
-  integrity sha1-GCMVs/HlSnSvtK+G0Soi5rDkWII=
-
 nopt@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-5.0.0.tgz#530942bb58a512fccafe53fe210f13a25355dc88"

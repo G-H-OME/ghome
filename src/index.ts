@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import session from 'express-session'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
+import http from 'http'
 import Redis from 'ioredis'
 import path from 'path'
 import { buildSchema } from 'type-graphql'
@@ -70,7 +71,13 @@ const main = async () => {
 	)
 
 	apolloServer.applyMiddleware({ app, cors: false })
-	app.listen(process.env.PORT)
+	const httpServer = http.createServer(app)
+	apolloServer.installSubscriptionHandlers(httpServer)
+	const PORT = 5000
+	httpServer.listen(PORT, () => {
+		console.log(`Server run at http://localhost:${PORT}/graphql`)
+	})
+	// app.listen(process.env.PORT)
 }
 
 main()

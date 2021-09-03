@@ -7,6 +7,7 @@ import {
 import { MongoHighlighter } from '@mikro-orm/mongo-highlighter'
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection'
 import dotenv from 'dotenv'
+import { Request, Response } from 'express'
 import { Session, SessionData } from 'express-session'
 import { Redis } from 'ioredis'
 import path from 'path'
